@@ -1,1 +1,1 @@
-web: gunicorn mormonwordsearch.wsgi 
+web: gunicorn myrealsite.wsgi 
