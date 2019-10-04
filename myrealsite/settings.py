@@ -23,8 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-with open('C:\djangostuff\secretkey.txt') as f:
-    SECRET_KEY = f.read().strip()
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fake-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
