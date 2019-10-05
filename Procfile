@@ -1,1 +1,2 @@
-web: gunicorn myrealsite.wsgi 
+release: python manage.py migrate
+web: gunicorn myrealsite.wsgi
