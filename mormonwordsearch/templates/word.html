@@ -1,5 +1,11 @@
-<form action="/mormonwordsearch/your-word/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Search">
-</form>
+{% block body %}
+<div class="container">
+    <h1>Welcome to Mormon Word Search!</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+    <h2>{{ text|linebreaks }}</h2>
+</div>
+{% endblock %}
