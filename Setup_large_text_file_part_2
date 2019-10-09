@@ -1,0 +1,127 @@
+#-*- coding: UTF-8 -sig*-
+import time #before 1898, after 2012
+start = time.time()
+from lxml import html
+import requests
+import scraperwiki
+import lxml.html
+import urllib.request
+from autocorrect import spell
+
+global sessions_list
+sessions_list = []
+url = []
+
+def erase_large_file():
+    print('',  file=open('C:\\Users\\jason\\OneDrive\\Desktop\\dataforpython\\GC\\' + 'all' + '.txt', 'w', encoding="utf-8"))
+
+def create_session_list():
+    for x in range(1897, 2012):
+        for y in range(2):
+            year = str(x)  # year
+            if y == 0:
+                s = 'a'  # session (April or October)
+            if y == 1:
+                s = 'sa'  # session (April or October)
+            session = year + s
+            if session not in sessions_list:
+                sessions_list.append(session)
+    # print(sessions_list)
+
+def get_url():
+    refined_sessions_list = []
+    global sessions_list
+    for x in range(len(sessions_list)):
+        session = sessions_list[x]
+        try:
+            html = scraperwiki.scrape('https://archive.org/details/conferencereport' + session)
+            root = lxml.html.fromstring(html)
+            # get the links
+            hrefs = root.xpath('//*[@id="maincontent"]/div[5]/div/div/div[2]/section[2]/div[6]/a')
+            for href in hrefs:
+                page = 'https://archive.org' + href.attrib['href']
+                if 'thumb' in page:
+                    page = page.replace('download', 'stream')
+                    page = page.replace('__ia_thumb.jpg', str(page[27:49]) + str('_djvu.txt'))
+                if 'djvu.txt' not in page:
+                    page = page.replace('download', 'stream')
+                    page = page.replace('images.zip', 'djvu.txt')
+                if 'mobi' in page:
+                    page = page.replace('.mobi', '_djvu.txt')
+
+                if page not in url:
+                    url.append(page)
+                refined_sessions_list.append(session)
+
+        except urllib.error.HTTPError as err:
+            print('need to get ' + str(session))
+    sessions_list = refined_sessions_list
+    print(sessions_list)
+    print(url)
+
+def get_content():
+    page = requests.get(url[x]) #gets text from webpage
+    tree = html.fromstring(page.content)
+    urlink = url[x]
+    if 'sa' in url[x]:
+        string = urlink[(urlink.index('ort')) + 3:(urlink.index('ort')) + 3 + 6]
+    else:
+        string = urlink[(urlink.index('ort')) + 3:(urlink.index('ort')) + 3 + 5]
+    global complete_script
+    complete_script = str(tree.xpath('//*[@id="maincontent"]/div/pre//text()')) #gets text
+    # print(complete_script)
+
+def refine_content():
+
+    global complete_script
+    complete_script = complete_script.replace('-', '') #removes hyphens from text (word continuations broken by line breaks)
+    complete_script = complete_script.replace('\\n', '') #removes line breaks from text
+
+    new_complete_script = []
+
+    for i in complete_script: #keep i only if i is english letter OR space OR number (, 'r', 's', 't', ' ', 'd', 'a', 'y', '.', ' ', 't', 'h', 'e', ' ', 's', 'i', 'x', 't', 'y', 'e', 'i', 'g', 'h', 't', 'h', ' ', 'a', 'n', 'n', 'u', 'a', 'l', ' ', 'c', 'o', 'n', 'f', 'e', 'r', 'e', 'n', 'c', 'e', ' ', 'o', 'f', ' ', 't', 'h', 'e', ' ', 'c', 'h', 'u', 'r', 'c', 'h', ' ', 'o', 'f', ' ', 'j', 'e', 's', 'u', 's', ' ', 'c', 'h', 'r', 'i', 's', 't', ' ', 'o', 'f', ' ', 'l', 'a', 't', ' ', 't', 'e', 'r', 'd', 'a', 'y', ' ', 's', 'a', 'i', 'n', 't', 's', ' ', 'c', 'o', 'n', 'v', 'e', 'n', 'e', 'd', ' ', 'i', 'n', ' ', 't', 'h', 'e', ' ', 't', 'a', 'b', 'e', 'r', ' ', 'n', 'a', 'c', 'l', 'e', ',', ' ', 's', 'a', 'l', 't', ' ', 'l', 'a', 'k', 'e', ' ', 'c', 'i', 't', 'y', ',', ' ', 'a', 't', ' ', '1', '0', ' ', 'a', '.', ' ', 'm', '.', ' ', 'o', 'n', ' ', 'w', 'e', 'd', 'n', 'e', 's', 'd', 'a', 'y', ',', ' ', 'a', 'p', 'r', 'i', 'l', ' ', '6', 't', 'h', ',', ' ', '1', '8', '8', ',', ' ', 'p', 'r', 'e', 's', 'i', 'd', 'e', 'n', 't', ' ', 'w', 'i', 'l', 'f', 'o', 'r', 'd', ' ', 'w', 'o', 'o', 'd', 'r', 'u', 'f', 'f', ' ', 'p', 'r', 'e', 's', 'i', 'd', 'i', 'n', 'g', '.', ' ', 'o', 'f', ' ', 't', 'h', 'e', ' ', 'g', 'e', 'n', 'e', 'r', 'a', 'l', ' ', 'a', 'u', 't', 'h', 'o', 'r', 'i', 't', 'i', 'e', 's', ' ', 'p', 'r', 'e', 's', 'e', 'n', 't', ' ', 'o', 'n', ' ', 't', 'h', 'e', ' ', 's', 't', 'a', 'n', 'd', ' ', 't', 'h', 'e', 'r', 'e', ' ', 'w', 'e', 'r', 'e', ' ', 'o', 'f', ' ', 't', 'h', 'e', ' ', 'f', 'i', 'r', 's', 't', ' ', 'p', 'r', 'e', 's', 'i', 'd', 'e', 'n', 'c', 'y', ' ', 'w', 'i', 'l', 'f', 'o', 'r', 'd', ' ', 'w', 'o', 'o', 'd', 'r', 'u', 'f', 'f', ',', ' ', 'g', 'e', 'o', 'r', 'g', 'e', ' ', 'q', '.', ' ', 'c', 'a', 'n', 'n', 'o', 'n', ' ', 'a', 'n', 'd', ' ', 'j', 'o', 's', 'e', 'p', 'h', ' ', 'p', '.', ' ', 's', 'm', 'i', 't', 'h', ' ', 'o', 'f', ' ', 't', 'h', 'e', ' ', 'q', 'u', 'o', 'r', 'u', 'm', ' ', 'o', 'f', ' ', 't', 'h', 'e', ' ', 't', 'w', 'e', 'l', 'v', 'e', ' ', 'a', 'p', 'o', 's', 't', 'l', 'e', 's', ' ', 'l', 'o', 'r', 'e', 'n', 'o', ' ', 's', 'n', 'o', 'w', ',', ' ', 'f', 'r', 'a', 'n', 'k', 'l', 'i', 'n', ' ', 'd', '.', ' ')
+        i = i.lower()
+        if i > u'\u0060' and i < u'\u007A' or i == ' ' or i > u'\u0029' and i < u'\u0039' and i != ',' and i !='.' and i != '*': #keep i only if i is english letter OR space OR number
+            new_complete_script.append(i)
+            complete_script = new_complete_script
+
+    complete_script = ''.join(complete_script) #turns string into list (conference the church of jesus christ  of latterday saints, tld in the tabernacle, salt lake city, april 6.h, 7th, 8th and 10th, 188, with a full report of the discourses. b an. account of the general conference of fe the deseret sunday school union. copyrighted 18fl8. all rights reyerved. deseret news publtshinp company. 188. general conference the church of jesus christ of latterday saints. first day. the sixtyeighth annual conference of the church of jesus christ of lat terday saints convened in the taber nacle, salt lake city, at 10 a. m. o)
+
+    # print(complete_script)
+    # print(len(complete_script))
+
+    complete_script = complete_script.split() #turns text from one big list item into one word per item (ints.', 'first', 'day.', 'the', 'sixtyeighth', 'annual', 'conference', 'of', 'the', 'church', 'of', 'jesus', 'christ', 'of', 'lat', 'terday', 'saints', 'convened', 'in', 'the', 'taber', 'nacle,', 'salt', 'lake', 'city,', 'at', '10', 'a.', 'm.', 'on', 'wednesday,', 'april', '6th,', '188,', 'president', 'wilford', 'woodruff', 'presiding.', 'of', 'the', 'general', 'authorities', 'present', 'on', 'the', 'stand', 'there', 'were', 'of', 'the', 'first', 'presidency', 'wilford', 'woodruff,', 'george', 'q.', 'cannon', 'and', 'joseph', 'p.', 'smith', 'of', 'the', 'quorum', 'of', 'the', 'twelve', 'apostles', 'loreno', 'snow,', 'franklin', 'd.', 'richards,', 'brigham', 'young,', 'francis', 'm.', 'lyman,', 'john', 'henry', 'smith,', 'george', 'teasdale,', 'heber', 'j.', 'grant,', 'john', 'w.', 'taylor,', 'mar', 'riner', 'w.', 'merrill,', 'matthias', 'f.', 'cowley'])
+
+    # new_complete_script = []
+    #
+    # for x in complete_script: #spell check (not perfect and takes a lot of time)
+    #     y = (spell(x))
+    #     if x != y:
+    #         x = y
+    #     if x == 'latterly':
+    #         x = 'latter-day'
+    #     new_complete_script.append(x)
+    # complete_script = new_complete_script
+
+    # print(complete_script)
+    # print(len(complete_script))
+
+def write_to_file():
+    print(complete_script,  file=open('C:\\Users\\jason\\OneDrive\\Desktop\\dataforpython\\GC\\' + str(sessions_list[x]) + '.txt', 'w', encoding="utf-8"))
+    print(str(sessions_list[x]) + str(complete_script),  file=open('C:\\Users\\jason\\OneDrive\\Desktop\\dataforpython\\GC\\' + 'all' + '.txt', 'a+', encoding="utf-8"))
+    # print(complete_script)
+
+
+erase_large_file()
+create_session_list()
+get_url()
+
+for x in range(len(sessions_list)):
+    get_content()
+    refine_content()
+    write_to_file()
+
+
+end = time.time() #3 lines print time script from start to finish
+total_time = end - start
+print(total_time)
