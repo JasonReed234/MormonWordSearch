@@ -1,8 +1,15 @@
-# DjangoMormonWordSearch4
+#MormonWordSearch
 
-#My 4th attempt at this.
+Mormonwordsearch is an app designed to prevent misinformation in the Mormon community. This app finds every instance of any given word in the Mormon corpus* and contextually renders it to the user with sources cited. The intended audience includes current and former members of the LDS church or anybody interested in historical accuracy as it pertains to the LDS church.
 
-#Mormonwordsearch is an app designed to prevent misinformation in the mormon community. The user can type a word into the search bar and see where it has been used throughout the church's history.
+*Mormon corpus includes general conference talks, scriptures, handbooks, newsletters, books written by general authorities of the church, etc.
+
+Next steps:
+1) Upload large Mormon corpus file to a PaaS (it is currently on my PC, program will not run until this step is complete)
+2) Provide formatting to enable an aesthetically pleasing output
+3) Complete the Mormon corpus file (currently contains all general conference talks from 1897-2011)
+4) Include "usage over time" charts for any word searched
+5) Implement ideas sourced from the community
 
 
 ## Deploy to Heroku
