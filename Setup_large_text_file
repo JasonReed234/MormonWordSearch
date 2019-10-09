@@ -1,0 +1,33 @@
+#-*- coding: UTF-8 -sig*-
+import time
+start = time.time()
+from lxml import html
+import requests
+
+for x in range(1830,2010):
+    for y in range(2):
+        year = str(x) #year
+        if y == 0:
+            s = 'a' #session (April or October)
+        if y == 1:
+            s = 'sa'  # session (April or October)
+        session = year + s
+
+        # page = requests.get('https://archive.org/stream/conferencereport' + session + '/conferencereport' + session + '_djvu.txt')
+        tree = html.fromstring(page.content)
+        complete_script = str(tree.xpath('//*[@id="maincontent"]/div/pre//text()'))
+
+        complete_script = (complete_script[1:-1])
+        complete_script = complete_script.replace(r'\n', '')
+        complete_script = complete_script.replace(r'- ', '')
+        complete_script = complete_script.replace(r'\'', '')
+
+        if y == 0:
+            print(year + '\'s April conference word count: ' + str(len(complete_script)))
+        if y == 1:
+            print(year + '\'s October conference word count: ' + str(len(complete_script)))
+
+
+end = time.time() #3 lines print time script from start to finish
+total_time = end - start
+print(total_time)
