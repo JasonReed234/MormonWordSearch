@@ -1,4 +1,4 @@
-#MormonWordSearch
+## MormonWordSearch
 
 Mormonwordsearch is an app designed to prevent misinformation in the Mormon community. This app finds every instance of any given word in the Mormon corpus* and contextually renders it to the user with sources cited. The intended audience includes current and former members of the LDS church or anybody interested in historical accuracy as it pertains to the LDS church.
 
